@@ -24,6 +24,8 @@ csl_src       = os.path.join(basedir, 'CSL'      , csl     )
 bib_src       = os.path.join(basedir, 'scripts'  , bib     )
 notebook_src  = os.path.join(basedir, 'notebooks', notebook)
 
+################################################################################
+
 @contextmanager
 def temp_working_dir():
     testdir = tempfile.mkdtemp()
@@ -32,6 +34,14 @@ def temp_working_dir():
     yield testdir
     os.chdir(curdir)
     shutil.rmtree(testdir)
+
+################################################################################
+
+def check_html():
+    with io.open(html,'r') as html_file:
+        assert ref_str in html_file.read()
+
+################################################################################
 
 def test_cli():
     # Create temporary directory as a context manager
@@ -52,8 +62,13 @@ def test_cli():
         for f in os.listdir(testdir):
             print('   ', f)
 
+        # Run the command-line interface
         subprocess.call([sys.executable, script, '--csl', csl, notebook])
+
+        # Check the results
         assert os.path.isfile(html)
+
+################################################################################
 
 def test_html():
     # Create temporary directory as a context manager
@@ -74,7 +89,148 @@ def test_html():
         for f in os.listdir(testdir):
             print('   ', f)
 
+        # Run the command-line interface
         subprocess.call([sys.executable, script, '--csl', csl, notebook])
 
+        # Check the results
+        check_html()
+
+################################################################################
+
+def test_append_csl_path():
+    # Create temporary directory as a context manager
+    with temp_working_dir() as testdir:
+
+        # Copy files to temporary directory
+        script_dest   = os.path.join(testdir, script  )
+        bib_dest      = os.path.join(testdir, bib     )
+        notebook_dest = os.path.join(testdir, notebook)
+        shutil.copyfile(script_src  , script_dest  )
+        shutil.copyfile(bib_src     , bib_dest     )
+        shutil.copyfile(notebook_src, notebook_dest)
+
+        # Run the command-line interface
+        csl_dir = os.path.join(basedir, 'CSL')
+        assert os.path.isdir(csl_dir)
+        subprocess.call([sys.executable, script, '--append-csl-path', csl_dir,
+                         '--csl', csl, notebook])
+
+        # Check the results
+        check_html()
+
+################################################################################
+
+def test_prepend_csl_path():
+    # Create temporary directory as a context manager
+    with temp_working_dir() as testdir:
+
+        # Copy files to temporary directory
+        script_dest   = os.path.join(testdir, script  )
+        bib_dest      = os.path.join(testdir, bib     )
+        notebook_dest = os.path.join(testdir, notebook)
+        shutil.copyfile(script_src  , script_dest  )
+        shutil.copyfile(bib_src     , bib_dest     )
+        shutil.copyfile(notebook_src, notebook_dest)
+
+        # Run the command-line interface
+        csl_dir = os.path.join(basedir, 'CSL')
+        assert os.path.isdir(csl_dir)
+        subprocess.call([sys.executable, script, '--prepend-csl-path', csl_dir,
+                         '--csl', csl, notebook])
+
+        # Check the results
+        check_html()
+
+################################################################################
+
+def test_replace_csl_path():
+    # Create temporary directory as a context manager
+    with temp_working_dir() as testdir:
+
+        # Copy files to temporary directory
+        script_dest   = os.path.join(testdir, script       )
+        bib_dest      = os.path.join(testdir, bib          )
+        notebook_dest = os.path.join(testdir, notebook     )
+        shutil.copyfile(script_src  , script_dest  )
+        shutil.copyfile(bib_src     , bib_dest     )
+        shutil.copyfile(notebook_src, notebook_dest)
+
+        # Run the command-line interface
+        csl_dir = os.path.join(basedir, 'CSL')
+        assert os.path.isdir(csl_dir)
+        subprocess.call([sys.executable, script, '--replace-csl-path', csl_dir,
+                         '--csl', csl, notebook])
+
+        # Check the results
+        check_html()
+
+################################################################################
+
+def test_csl():
+    # Create temporary directory as a context manager
+    with temp_working_dir() as testdir:
+
+        # Copy files to temporary directory
+        script_dest   = os.path.join(testdir, script       )
+        csl_dest      = os.path.join(testdir, "Hahvahd.csl")
+        bib_dest      = os.path.join(testdir, bib          )
+        notebook_dest = os.path.join(testdir, notebook     )
+        shutil.copyfile(script_src  , script_dest  )
+        shutil.copyfile(csl_src     , csl_dest       )
+        shutil.copyfile(bib_src     , bib_dest     )
+        shutil.copyfile(notebook_src, notebook_dest)
+
+        # Run the command-line interface
+        subprocess.call([sys.executable, script, '--csl', 'Hahvahd.csl',
+                         notebook])
+
+        # Check the results
+        check_html()
+
+################################################################################
+
+def test_header():
+    # Create temporary directory as a context manager
+    with temp_working_dir() as testdir:
+
+        # Copy files to temporary directory
+        script_dest   = os.path.join(testdir, script  )
+        csl_dest      = os.path.join(testdir, csl     )
+        bib_dest      = os.path.join(testdir, bib     )
+        notebook_dest = os.path.join(testdir, notebook)
+        shutil.copyfile(script_src  , script_dest  )
+        shutil.copyfile(csl_src     , csl_dest     )
+        shutil.copyfile(bib_src     , bib_dest     )
+        shutil.copyfile(notebook_src, notebook_dest)
+
+        # Run the command-line interface
+        new_header = 'Bibliography'
+        subprocess.call([sys.executable, script, '--csl', csl, '--header',
+                         new_header, notebook])
+
+        # Check the results
         with io.open(html,'r') as html_file:
-            assert ref_str in html_file.read()
+            assert new_header in html_file.read()
+
+################################################################################
+
+def test_bib():
+    # Create temporary directory as a context manager
+    with temp_working_dir() as testdir:
+
+        # Copy files to temporary directory
+        script_dest   = os.path.join(testdir, script  )
+        csl_dest      = os.path.join(testdir, csl     )
+        notebook_dest = os.path.join(testdir, notebook)
+        shutil.copyfile(script_src  , script_dest  )
+        shutil.copyfile(csl_src     , csl_dest     )
+        shutil.copyfile(notebook_src, notebook_dest)
+
+        # Run the command-line interface
+        bibfile = os.path.join(basedir, 'scripts', 'ref.bib')
+        subprocess.call([sys.executable, script, '--csl', csl, '--bib',
+                         bibfile, notebook])
+
+        # Check the results
+        check_html()
+
