@@ -14,6 +14,7 @@ thisdir  = os.path.dirname(os.path.abspath(__file__))
 basedir  = os.path.normpath(os.path.join(thisdir, '..'))
 script   = os.path.join(basedir, 'scripts', 'nb2html.py')
 csl      = 'Harvard.csl'
+csl_new  = 'Hahvahd.csl'
 bib      = 'ref.bib'
 notebook = 'SimpleCitation.ipynb'
 html     = notebook.replace('ipynb','html')
@@ -88,11 +89,16 @@ def test_append_csl_path():
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
+        # Make a new CSL directory
+        csl_dir = os.path.join(testdir, 'CSL')
+        os.mkdir(csl_dir)
+        csl_dest = os.path.join(csl_dir, csl_new)
+        shutil.copyfile(csl_src, csl_dest)
+
         # Run the command-line interface
-        csl_dir = os.path.join(basedir, 'shared', 'CSL')
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--append-csl-path', csl_dir,
-                         '--csl', csl, notebook])
+                         '--csl', csl_new, notebook])
 
         # Check the results
         check_html()
@@ -109,11 +115,16 @@ def test_prepend_csl_path():
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
+        # Make a new CSL directory
+        csl_dir = os.path.join(testdir, 'CSL')
+        os.mkdir(csl_dir)
+        csl_dest = os.path.join(csl_dir, csl_new)
+        shutil.copyfile(csl_src, csl_dest)
+
         # Run the command-line interface
-        csl_dir = os.path.join(basedir, 'shared', 'CSL')
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--prepend-csl-path', csl_dir,
-                         '--csl', csl, notebook])
+                         '--csl', csl_new, notebook])
 
         # Check the results
         check_html()
@@ -130,11 +141,16 @@ def test_replace_csl_path():
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
+        # Make a new CSL directory
+        csl_dir = os.path.join(testdir, 'CSL')
+        os.mkdir(csl_dir)
+        csl_dest = os.path.join(csl_dir, csl_new)
+        shutil.copyfile(csl_src, csl_dest)
+
         # Run the command-line interface
-        csl_dir = os.path.join(basedir, 'shared', 'CSL')
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--replace-csl-path', csl_dir,
-                         '--csl', csl, notebook])
+                         '--csl', csl_new, notebook])
 
         # Check the results
         check_html()
