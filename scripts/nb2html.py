@@ -353,23 +353,23 @@ def convert(filename, options):
     notebook = nbformat.reads(response, as_version=4)
 
     # Configure the HTMLExporter to use the preprocessors
-    c = Config()
-    c.ExecutePreprocessor.enabled           = True
-    c.ExecutePreprocessor.kernel_name       = options.kernel
-    c.ExecutePreprocessor.timeout           = options.timeout
-    c.VerboseExecutePreprocessor.enabled    = True
-    c.VerboseExecutePreprocessor.verbose    = options.verbose
-    c.AddCitationsPreprocessor.enabled      = True
-    c.AddCitationsPreprocessor.verbose      = options.verbose
-    c.AddCitationsPreprocessor.csl          = options.csl
-    c.AddCitationsPreprocessor.csl_path     = options.csl_path
-    c.AddCitationsPreprocessor.bibliography = options.bib
-    c.AddCitationsPreprocessor.header       = options.header
-    c.HTMLExporter.preprocessors = [VerboseExecutePreprocessor(config=c),
-                                    AddCitationsPreprocessor(config=c)]
+    cfg = Config()
+    cfg.ExecutePreprocessor.enabled           = True
+    cfg.ExecutePreprocessor.kernel_name       = options.kernel
+    cfg.ExecutePreprocessor.timeout           = options.timeout
+    cfg.VerboseExecutePreprocessor.enabled    = True
+    cfg.VerboseExecutePreprocessor.verbose    = options.verbose
+    cfg.AddCitationsPreprocessor.enabled      = True
+    cfg.AddCitationsPreprocessor.verbose      = options.verbose
+    cfg.AddCitationsPreprocessor.csl          = options.csl
+    cfg.AddCitationsPreprocessor.csl_path     = options.csl_path
+    cfg.AddCitationsPreprocessor.bibliography = options.bib
+    cfg.AddCitationsPreprocessor.header       = options.header
+    cfg.HTMLExporter.preprocessors = [VerboseExecutePreprocessor(config=cfg),
+                                      AddCitationsPreprocessor(config=cfg)]
 
     # Convert the notebook to HTML
-    html_exporter = HTMLExporter(config=c)
+    html_exporter = HTMLExporter(config=cfg)
     if options.verbose:
         print('Converting "%s" to HTML' % filename)
     (body, resources) = html_exporter.from_notebook_node(notebook)
