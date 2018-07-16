@@ -19,10 +19,10 @@ notebook = 'SimpleCitation.ipynb'
 html     = notebook.replace('ipynb','html')
 ref_str  = u"Smith, A. (2018) ‘Peculiar effects of a polynational existence’, " \
            u"<em>Journal of Multiculturalism</em>, 97(D12), pp. 12, 771–12, 786."
-script_src    = os.path.join(basedir, 'scripts'  , script  )
-csl_src       = os.path.join(basedir, 'CSL'      , csl     )
-bib_src       = os.path.join(basedir, 'scripts'  , bib     )
-notebook_src  = os.path.join(basedir, 'notebooks', notebook)
+script_src    = os.path.join(basedir, 'scripts'      , script  )
+csl_src       = os.path.join(basedir, 'shared', 'CSL', csl     )
+bib_src       = os.path.join(basedir, 'tests'        , bib     )
+notebook_src  = os.path.join(basedir, 'notebooks'    , notebook)
 
 ################################################################################
 
@@ -110,7 +110,7 @@ def test_append_csl_path():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        csl_dir = os.path.join(basedir, 'CSL')
+        csl_dir = os.path.join(basedir, 'shared', 'CSL')
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--append-csl-path', csl_dir,
                          '--csl', csl, notebook])
@@ -133,7 +133,7 @@ def test_prepend_csl_path():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        csl_dir = os.path.join(basedir, 'CSL')
+        csl_dir = os.path.join(basedir, 'shared', 'CSL')
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--prepend-csl-path', csl_dir,
                          '--csl', csl, notebook])
@@ -156,7 +156,7 @@ def test_replace_csl_path():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        csl_dir = os.path.join(basedir, 'CSL')
+        csl_dir = os.path.join(basedir, 'shared', 'CSL')
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--replace-csl-path', csl_dir,
                          '--csl', csl, notebook])
@@ -176,7 +176,7 @@ def test_csl():
         bib_dest      = os.path.join(testdir, bib          )
         notebook_dest = os.path.join(testdir, notebook     )
         shutil.copyfile(script_src  , script_dest  )
-        shutil.copyfile(csl_src     , csl_dest       )
+        shutil.copyfile(csl_src     , csl_dest     )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
@@ -227,7 +227,7 @@ def test_bib():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        bibfile = os.path.join(basedir, 'scripts', 'ref.bib')
+        bibfile = os.path.join(basedir, 'tests', 'ref.bib')
         subprocess.call([sys.executable, script, '--csl', csl, '--bib',
                          bibfile, notebook])
 
