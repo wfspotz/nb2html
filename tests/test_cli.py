@@ -12,16 +12,15 @@ import tempfile
 # Find resources
 thisdir  = os.path.dirname(os.path.abspath(__file__))
 basedir  = os.path.normpath(os.path.join(thisdir, '..'))
-script   = 'nb2html.py'
+script   = os.path.join(basedir, 'scripts', 'nb2html.py')
 csl      = 'Harvard.csl'
 bib      = 'ref.bib'
 notebook = 'SimpleCitation.ipynb'
 html     = notebook.replace('ipynb','html')
 ref_str  = u"Smith, A. (2018) ‘Peculiar effects of a polynational existence’, " \
            u"<em>Journal of Multiculturalism</em>, 97(D12), pp. 12, 771–12, 786."
-script_src    = os.path.join(basedir, 'scripts'      , script  )
 csl_src       = os.path.join(basedir, 'shared', 'CSL', csl     )
-bib_src       = os.path.join(basedir, 'tests'        , bib     )
+bib_src       = os.path.join(basedir, 'notebooks'    , bib     )
 notebook_src  = os.path.join(basedir, 'notebooks'    , notebook)
 
 ################################################################################
@@ -48,22 +47,13 @@ def test_cli():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script  )
-        csl_dest      = os.path.join(testdir, csl     )
         bib_dest      = os.path.join(testdir, bib     )
         notebook_dest = os.path.join(testdir, notebook)
-        shutil.copyfile(script_src  , script_dest  )
-        shutil.copyfile(csl_src     , csl_dest     )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
-        # Show the directory
-        print(testdir)
-        for f in os.listdir(testdir):
-            print('   ', f)
-
         # Run the command-line interface
-        subprocess.call([sys.executable, script, '--csl', csl, notebook])
+        subprocess.call([sys.executable, script, notebook])
 
         # Check the results
         assert os.path.isfile(html)
@@ -75,22 +65,13 @@ def test_html():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script  )
-        csl_dest      = os.path.join(testdir, csl     )
         bib_dest      = os.path.join(testdir, bib     )
         notebook_dest = os.path.join(testdir, notebook)
-        shutil.copyfile(script_src  , script_dest  )
-        shutil.copyfile(csl_src     , csl_dest     )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
-        # Show the directory
-        print(testdir)
-        for f in os.listdir(testdir):
-            print('   ', f)
-
         # Run the command-line interface
-        subprocess.call([sys.executable, script, '--csl', csl, notebook])
+        subprocess.call([sys.executable, script, notebook])
 
         # Check the results
         check_html()
@@ -102,10 +83,8 @@ def test_append_csl_path():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script  )
         bib_dest      = os.path.join(testdir, bib     )
         notebook_dest = os.path.join(testdir, notebook)
-        shutil.copyfile(script_src  , script_dest  )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
@@ -125,10 +104,8 @@ def test_prepend_csl_path():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script  )
         bib_dest      = os.path.join(testdir, bib     )
         notebook_dest = os.path.join(testdir, notebook)
-        shutil.copyfile(script_src  , script_dest  )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
@@ -148,10 +125,8 @@ def test_replace_csl_path():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script       )
         bib_dest      = os.path.join(testdir, bib          )
         notebook_dest = os.path.join(testdir, notebook     )
-        shutil.copyfile(script_src  , script_dest  )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
@@ -171,11 +146,9 @@ def test_csl():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script       )
         csl_dest      = os.path.join(testdir, "Hahvahd.csl")
         bib_dest      = os.path.join(testdir, bib          )
         notebook_dest = os.path.join(testdir, notebook     )
-        shutil.copyfile(script_src  , script_dest  )
         shutil.copyfile(csl_src     , csl_dest     )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
@@ -194,19 +167,15 @@ def test_header():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script  )
-        csl_dest      = os.path.join(testdir, csl     )
         bib_dest      = os.path.join(testdir, bib     )
         notebook_dest = os.path.join(testdir, notebook)
-        shutil.copyfile(script_src  , script_dest  )
-        shutil.copyfile(csl_src     , csl_dest     )
         shutil.copyfile(bib_src     , bib_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
         new_header = 'Bibliography'
-        subprocess.call([sys.executable, script, '--csl', csl, '--header',
-                         new_header, notebook])
+        subprocess.call([sys.executable, script, '--header', new_header,
+                         notebook])
 
         # Check the results
         with io.open(html,'r') as html_file:
@@ -219,18 +188,12 @@ def test_bib():
     with temp_working_dir() as testdir:
 
         # Copy files to temporary directory
-        script_dest   = os.path.join(testdir, script  )
-        csl_dest      = os.path.join(testdir, csl     )
         notebook_dest = os.path.join(testdir, notebook)
-        shutil.copyfile(script_src  , script_dest  )
-        shutil.copyfile(csl_src     , csl_dest     )
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        bibfile = os.path.join(basedir, 'tests', 'ref.bib')
-        subprocess.call([sys.executable, script, '--csl', csl, '--bib',
-                         bibfile, notebook])
+        bibfile = os.path.join(basedir, 'notebooks', 'ref.bib')
+        subprocess.call([sys.executable, script, '--bib', bibfile, notebook])
 
         # Check the results
         check_html()
-

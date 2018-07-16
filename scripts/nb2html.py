@@ -107,7 +107,7 @@ class AddCitationsPreprocessor(Preprocessor):
         bibliography - The name of the BibTeX bibliography file (default
                        "ref.bib")
         csl          - The name of the Citation Style Language file (default
-                       "Climate.csl")
+                       "Harvard.csl")
         csl_path     - The list of pathnames to search for CSL files (default
                        ['.', <location-of-this-script>/CSL])
         verbose      - Boolean that determines whether output to stdout is
@@ -126,10 +126,13 @@ class AddCitationsPreprocessor(Preprocessor):
     bibliography = Unicode(u'ref.bib',
                            help='Name of the BibTeX bibliography file',
                            config=True)
-    csl          = Unicode(u'Climate.csl',
+    csl          = Unicode(u'Harvard.csl',
                            help='Name of the Citation Style Language file',
                            config=True)
-    csl_path     = List(   [u'.', os.path.join(os.path.split(os.path.abspath(__file__))[0], u'CSL')],
+    csl_dir      = os.path.normpath(os.path.join(os.path.dirname(
+                                    os.path.abspath(__file__)), u'..',
+                                    u'shared', u'CSL'))
+    csl_path     = List(   [u'.', csl_dir],
                            help='A list of paths to search for CSL files',
                            config=True)
     verbose      = Bool(   False,
