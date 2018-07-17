@@ -4,6 +4,7 @@
 # Module imports
 import nbconvert
 import nbformat
+import os
 import pypandoc
 
 ################################################################################

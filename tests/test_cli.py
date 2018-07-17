@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Imports
 import io
 import os
 import shutil
@@ -23,6 +24,13 @@ ref_str  = u"Smith, A. (2018) ‘Peculiar effects of a polynational existence’
 csl_src       = os.path.join(basedir, 'shared', 'CSL', csl     )
 bib_src       = os.path.join(basedir, 'notebooks'    , bib     )
 notebook_src  = os.path.join(basedir, 'notebooks'    , notebook)
+
+# Make sure that the nb2html.py script can find the nbref package
+env = os.environ
+python_path = env.get("PYTHONPATH", '').split(':')
+if basedir not in python_path:
+    python_path.insert(0, basedir)
+env["PYTHONPATH"] = ':'.join(python_path)
 
 ################################################################################
 
@@ -54,7 +62,7 @@ def test_cli():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        subprocess.call([sys.executable, script, notebook])
+        subprocess.call([sys.executable, script, notebook], env=env)
 
         # Check the results
         assert os.path.isfile(html)
@@ -72,7 +80,7 @@ def test_html():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        subprocess.call([sys.executable, script, notebook])
+        subprocess.call([sys.executable, script, notebook], env=env)
 
         # Check the results
         check_html()
@@ -98,7 +106,7 @@ def test_append_csl_path():
         # Run the command-line interface
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--append-csl-path', csl_dir,
-                         '--csl', csl_new, notebook])
+                         '--csl', csl_new, notebook], env=env)
 
         # Check the results
         check_html()
@@ -124,7 +132,7 @@ def test_prepend_csl_path():
         # Run the command-line interface
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--prepend-csl-path', csl_dir,
-                         '--csl', csl_new, notebook])
+                         '--csl', csl_new, notebook], env=env)
 
         # Check the results
         check_html()
@@ -150,7 +158,7 @@ def test_replace_csl_path():
         # Run the command-line interface
         assert os.path.isdir(csl_dir)
         subprocess.call([sys.executable, script, '--replace-csl-path', csl_dir,
-                         '--csl', csl_new, notebook])
+                         '--csl', csl_new, notebook], env=env)
 
         # Check the results
         check_html()
@@ -171,7 +179,7 @@ def test_csl():
 
         # Run the command-line interface
         subprocess.call([sys.executable, script, '--csl', 'Hahvahd.csl',
-                         notebook])
+                         notebook], env=env)
 
         # Check the results
         check_html()
@@ -191,7 +199,7 @@ def test_header():
         # Run the command-line interface
         new_header = 'Bibliography'
         subprocess.call([sys.executable, script, '--header', new_header,
-                         notebook])
+                         notebook], env=env)
 
         # Check the results
         with io.open(html,'r') as html_file:
@@ -209,7 +217,8 @@ def test_bib():
 
         # Run the command-line interface
         bibfile = os.path.join(basedir, 'notebooks', 'ref.bib')
-        subprocess.call([sys.executable, script, '--bib', bibfile, notebook])
+        subprocess.call([sys.executable, script, '--bib', bibfile, notebook],
+                        env=env)
 
         # Check the results
         check_html()
