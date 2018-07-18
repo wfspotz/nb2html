@@ -178,8 +178,8 @@ def test_csl():
         shutil.copyfile(notebook_src, notebook_dest)
 
         # Run the command-line interface
-        subprocess.call([sys.executable, script, '--csl', 'Hahvahd.csl',
-                         notebook], env=env)
+        subprocess.call([sys.executable, script, '--csl', csl_new, notebook],
+                        env=env)
 
         # Check the results
         check_html()
