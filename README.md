@@ -1,5 +1,7 @@
 # nb2html
-Converter script from Jupyter notebooks to HTML, with bibliography citations
+
+Converter from Jupyter notebooks to HTML, including bibliography
+citations
 
 Requirements:
   * `nbconvert`
